@@ -1,6 +1,8 @@
 
 #include "linux_log.h"
 #include <time.h>
+#include <unistd.h>
+#include <string.h>
 
 
 uint64_t clock_ms_get(void)
@@ -25,7 +27,11 @@ uint64_t log_time(void)
     clock_gettime(CLOCK_REALTIME, &clock_time);
     time(&time_seconds); // seconds from 1970-1-1:0:0:0
     time_ms = clock_time.tv_nsec / 1000000;
-    sprintf(str,"Date: %s:[ms:%ld] LOG: ",asctime(localtime(&time_seconds)),time_ms);
+    char * asc = asctime(localtime(&time_seconds));
+    if (asc[strlen(asc) - 1] == '\n') {
+        asc[strlen(asc) - 1] = '\0';
+    }
+    sprintf(str,"Date: %s:[ms:%ld] LOG: ", asc, time_ms);
     printf("%s",str);
 #endif
 
